@@ -172,6 +172,7 @@ class _AudioListPageState extends State<AudioListPage> {
             Expanded(
               child: audioList == null
                   ? const Center(child: CircularProgressIndicator())
+                  : (audioList!.isEmpty ? Center(child: Text('No ${widget.type} found', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))
                   : ListView.builder(
                 padding: const EdgeInsets.all(10),
                 itemCount: audioList!.length,
@@ -191,19 +192,30 @@ class _AudioListPageState extends State<AudioListPage> {
                             ),
                           );
                         } else {
-                          myDua.updateFavDua(authProvider.userId!, audio.id).then((
-                              value) {
-                            if (value.type == 'success') {
-                              setState(() {
-                                audio.fav = value.fav;
-                              });
-                            }
-                          });
+                          if (widget.type == "surah") {
+                            myDua.updateSurahDua(authProvider.userId!, audio.id)
+                                .then((value) {
+                              if (value.type == 'success') {
+                                setState(() {
+                                  audio.fav = value.fav;
+                                });
+                              }
+                            });
+                          } else {
+                            myDua.updateFavSahifa(authProvider.userId!, audio.id)
+                                .then((value) {
+                              if (value.type == 'success') {
+                                setState(() {
+                                  audio.fav = value.fav;
+                                });
+                              }
+                            });
+                          }
                         }
                       }
                   );
                 },
-              ),
+              )),
             ),
             CustomDropdown<String>(
               hintText: 'Select Language',

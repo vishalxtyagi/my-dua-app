@@ -1,8 +1,11 @@
 import 'dart:developer';
 
+import 'package:dua/pages/auth/login_page.dart';
 import 'package:dua/services/api_service.dart';
 import 'package:dua/services/auth_service.dart';
+import 'package:dua/utils/auth.dart';
 import 'package:dua/utils/colors.dart';
+import 'package:dua/utils/helper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -15,59 +18,61 @@ class _SignUpPageState extends State<SignUpPage> {
   final auth = AuthService(ApiService());
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _username = '';
-  String _firstName = '';
-  String _lastName = '';
-  String _email = '';
-  String _password = '';
+  final Map<String, dynamic> _userDetails = {
+    'username': '',
+    'firstname': '',
+    'lastname': '',
+    'email': '',
+    'password': ''
+  };
 
   void _submitForm() async {
     final form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
-      try {
-        auth.signUp(_username, _email, _password, _firstName, _lastName).then((value) {
-          log('Response: ${value.message}');
-          // Show alert dialog
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Signup'),
-                content: Text(value.message),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        });
-      } catch (e) {
-        log('Error: $e');
-        // Handle signup errors
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Login'),
-              content: Text('Invalid credentials!!'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
+
+      signup(_userDetails,
+          onSuccess: (message) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Signup'),
+                  content: Text(formatHeading(message)),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginPage()));
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );          },
+          onError: (message) {
+            // Show alert dialog
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Signup'),
+                  content: Text(formatHeading(message)),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
             );
-          },
-        );
-      }
+          }
+      );
     }
   }
 
@@ -97,7 +102,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: 'First Name',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.black)
                         ),
+                        fillColor: Colors.white,
+                        filled: true
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -106,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         return null;
                       },
                       onSaved: (value) {
-                        _firstName = value!;
+                        _userDetails['firstname'] = value!;
                       },
                     ),
                   ),
@@ -117,7 +125,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: 'Last Name',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.black)
                         ),
+                        fillColor: Colors.white,
+                        filled: true
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -126,7 +137,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         return null;
                       },
                       onSaved: (value) {
-                        _lastName = value!;
+                        _userDetails['lastname'] = value!;
                       },
                     ),
                   ),
@@ -138,7 +149,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Username',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.black)
                   ),
+                  fillColor: Colors.white,
+                  filled: true
                 ),
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -147,7 +161,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  _username = value!;
+                  _userDetails['username'] = value!;
                 },
               ),
               SizedBox(height: 10),
@@ -157,7 +171,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Email',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.black)
                   ),
+                  fillColor: Colors.white,
+                  filled: true
                 ),
                 validator: (value) {
                   if (value!.isEmpty || !value.contains('@')) {
@@ -166,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  _email = value!;
+                  _userDetails['email'] = value!;
                 },
               ),
               SizedBox(height: 10),
@@ -176,7 +193,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Password',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.black)
                   ),
+                  fillColor: Colors.white,
+                  filled: true
                 ),
                 validator: (value) {
                   if (value!.isEmpty || value.length < 6) {
@@ -185,7 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  _password = value!;
+                  _userDetails['password'] = value!;
                 },
               ),
               SizedBox(height: 20),

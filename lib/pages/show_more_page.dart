@@ -1,9 +1,10 @@
 import 'dart:developer';
 
 import 'package:dua/pages/audio_list_page.dart';
+import 'package:dua/pages/auth/change_password_page.dart';
 import 'package:dua/pages/auth/login_page.dart';
 import 'package:dua/pages/favourite_page.dart';
-import 'package:dua/pages/profile_page.dart';
+import 'package:dua/pages/auth/profile_page.dart';
 import 'package:dua/pages/web_view_page.dart';
 import 'package:dua/providers/audio_provider.dart';
 import 'package:dua/providers/auth_provider.dart';
@@ -44,8 +45,8 @@ class _ShowMorePageState extends State<ShowMorePage> {
         MoreData("Aamaal and Namaz", image: "assets/images/namaz.png", page: const WebViewPage(url: "https://mydua.online/aamaal-and-namaz/")),
         MoreData("My Favourites", image: "assets/images/favourite.png", page: isAuthenticated ? FavouritePage() : LoginPage(redirectTo: FavouritePage())),
         MoreData("Quotes", image: "assets/images/quote_request.png", page: const WebViewPage(url: "https://mydua.online/quotes/")),
-        MoreData("Hijri Date Adjustment", image: "assets/images/clock.png"),
-        MoreData("Azan Settings Notification", image: "assets/images/ajan.jpeg"),
+        // MoreData("Hijri Date Adjustment", image: "assets/images/clock.png"),
+        // MoreData("Azan Settings Notification", image: "assets/images/ajan.jpeg"),
         MoreData("Our Radio", image: "assets/images/radio.png", page: const WebViewPage(url: "https://azadar.media/")),
         MoreData("Waqf", image: "assets/images/arabic.png", page: const WebViewPage(url: "https://mydua.online/apppage-for-waqf/")),
         MoreData("Feedback", image: "assets/images/rating.png", page: const WebViewPage(url: "https://mydua.online/feedback/")),
@@ -66,7 +67,7 @@ class _ShowMorePageState extends State<ShowMorePage> {
       listData.clear();
       listData.addAll([
         MoreData("My Profile", page: ProfilePage()),
-        MoreData("Change Password", page: const AudioListPage(type: "sahifaSajjadia",)),
+        MoreData("Change Password", page: ChangePasswordPage()),
         MoreData("Logout"),
       ]);
     });

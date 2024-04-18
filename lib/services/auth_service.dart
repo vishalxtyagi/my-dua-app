@@ -1,4 +1,6 @@
 import 'package:dua/models/auth/auth_response.dart';
+import 'package:dua/models/auth/profile_response.dart';
+import 'package:dua/models/user/user_data.dart';
 import 'package:dua/services/api_service.dart';
 
 class AuthService {
@@ -47,8 +49,8 @@ class AuthService {
     return response;
   }
 
-  Future<AuthResponse> changePassword(int userId, String oldPassword, String newPassword, String confirmNewPassword) async {
-    final response = await apiService.fetchData<AuthResponse>(
+  Future<ProfileResponse> changePassword(int userId, String oldPassword, String newPassword, String confirmNewPassword) async {
+    final response = await apiService.fetchData<ProfileResponse>(
         endpoint: '/changepassword',
         method: 'POST',
         query: {
@@ -59,7 +61,37 @@ class AuthService {
           'newpassword': newPassword,
           'cnewpassword': confirmNewPassword
         },
-        fromJson: (json) => AuthResponse.fromJson(json)
+        fromJson: (json) => ProfileResponse.fromJson(json)
+    );
+    return response;
+  }
+
+  Future<UserData> getUserInfo(int userId) async {
+    final response = await apiService.fetchData<UserData>(
+        endpoint: '/userinfo',
+        method: 'POST',
+        query: {
+          'userid': userId.toString()
+        },
+        fromJson: (json) => UserData.fromJson(json)
+    );
+    return response;
+  }
+
+  Future<ProfileResponse> updateUserInfo(int userId, String firstname, String lastname, String gender, String phone) async {
+    final response = await apiService.fetchData<ProfileResponse>(
+        endpoint: '/updateuserinfo',
+        method: 'POST',
+        query: {
+          'userid': userId.toString()
+        },
+        data: {
+          'firstname': firstname,
+          'lastname': lastname,
+          'gender': gender,
+          'phone': phone
+        },
+        fromJson: (json) => ProfileResponse.fromJson(json)
     );
     return response;
   }

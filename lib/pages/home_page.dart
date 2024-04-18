@@ -1,5 +1,6 @@
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:dua/providers/app_provider.dart';
@@ -12,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
-import 'package:quickalert/quickalert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'daily_dua_page.dart';
 import 'dua_page.dart';
@@ -69,21 +70,42 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     checkInternetConnectivity((isConnected) {
       if (!isConnected) {
-        QuickAlert.show(
-          context: context,
-          title: 'No Internet Connection',
-          text: 'Please connect to the internet to use the app',
-          type: QuickAlertType.error,
-          disableBackBtn: true,
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('No Internet Connection'),
+                content: const Text('Please check your internet connection and try again'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      exit(0);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            }
         );
       }
     }, onProxy: (isVPN) {
       if (isVPN) {
-        QuickAlert.show(
-          context: context,
-          title: 'VPN Detected',
-          text: 'Please disable VPN to use the app',
-          type: QuickAlertType.warning,
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('VPN Detected'),
+                content: const Text('It seems you are using a VPN. Please disable it because it may cause some issues'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            }
         );
       }
     });
@@ -92,16 +114,32 @@ class _HomePageState extends State<HomePage> {
     fetchHeadlines();
     fetchEvent();
 
-    determinePosition((lat, long) {
+    determinePosition((lat, long) async {
       log('Latitude: $lat, Longitude: $long');
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setDouble('latitude', lat);
+      prefs.setDouble('longitude', long);
+
       appProvider.setCoordinates(lat, long);
     }, (error) {
       log('Error: $error');
-      QuickAlert.show(
-        context: context,
-        title: 'Location Error',
-        text: error,
-        type: QuickAlertType.error,
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Location Error'),
+              content: const Text('Please enable location services and try again'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          }
       );
     });
   }

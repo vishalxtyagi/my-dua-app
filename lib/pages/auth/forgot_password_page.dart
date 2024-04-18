@@ -1,9 +1,8 @@
-import 'package:dua/pages/auth/forgot_password_page.dart';
-import 'package:dua/pages/auth/signup_page.dart';
+import 'package:dua/pages/auth/login_page.dart';
+import 'package:dua/utils/auth.dart';
 import 'package:dua/utils/colors.dart';
-import 'package:flutter/gestures.dart';
+import 'package:dua/utils/helper.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
 
@@ -12,7 +11,6 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email = '';
 
@@ -20,6 +18,48 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
+
+      forgotPassword(_email,
+          onSuccess: (message) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Password Request'),
+                  content: Text(formatHeading(message)),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );          },
+          onError: (message) {
+            // Show alert dialog
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Password Request'),
+                  content: Text('There is no user registered with that email address.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+      );
     }
   }
 
@@ -34,7 +74,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           backgroundColor: AppColors.primaryColor,
           centerTitle: true,
         ),
-        body:Container(
+        body: Container(
           padding: EdgeInsets.all(20),
           child: Form(
             key: _formKey,
@@ -51,7 +91,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       labelText: 'Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                      )
+                          borderSide: BorderSide(color: Colors.black)
+                      ),
+                      fillColor: Colors.white,
+                      filled: true
                   ),
                   validator: (value) {
                     if (value!.isEmpty || !value.contains('@')) {

@@ -27,17 +27,17 @@ class _LoginPageState extends State<LoginPage> {
   late AudioProvider audioProvider;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _username = '';
-  String _password = '';
+  final Map<String, dynamic> _credentials = {
+    'username': '',
+    'password': ''
+  };
 
   void _submitForm() async {
     final form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
 
-      login(
-          _username,
-          _password,
+      login(_credentials,
           onSuccess: (userId) {
             log('User ID: $userId');
             authProvider.updateUserId(userId);
@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: AppColors.primaryColor,
           centerTitle: true,
         ),
-        body:Container(
+        body: Container(
           padding: EdgeInsets.all(20),
           child: Form(
             key: _formKey,
@@ -123,7 +123,10 @@ class _LoginPageState extends State<LoginPage> {
                       labelText: 'Username',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                    )
+                        borderSide: BorderSide(color: Colors.black)
+                  ),
+                fillColor: Colors.white,
+                filled: true
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -132,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                   onSaved: (value) {
-                    _username = value!;
+                    _credentials['username'] = value!;
                   },
                 ),
                 SizedBox(height: 10),
@@ -142,7 +145,10 @@ class _LoginPageState extends State<LoginPage> {
                       labelText: 'Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.black)
                     ),
+                      fillColor: Colors.white,
+                      filled: true
                   ),
                   validator: (value) {
                     if (value!.isEmpty || value.length < 6) {
@@ -151,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                   onSaved: (value) {
-                    _password = value!;
+                    _credentials['password'] = value!;
                   },
                 ),
                 SizedBox(height: 20),

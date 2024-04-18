@@ -1,20 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'favourite_api.dart';
+part of 'profile_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-FavouriteApi _$FavouriteApiFromJson(Map<String, dynamic> json) => FavouriteApi(
+ProfileResponse _$ProfileResponseFromJson(Map<String, dynamic> json) =>
+    ProfileResponse(
+      msg: json['msg'] as String,
       type: json['type'] as String,
-      fav: json['fav'] as String?,
-      icon: json['icon'] as String?,
     );
 
-Map<String, dynamic> _$FavouriteApiToJson(FavouriteApi instance) =>
+Map<String, dynamic> _$ProfileResponseToJson(ProfileResponse instance) =>
     <String, dynamic>{
-      'fav': instance.fav,
-      'icon': instance.icon,
+      'msg': instance.msg,
       'type': instance.type,
     };

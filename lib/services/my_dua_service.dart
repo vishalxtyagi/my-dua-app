@@ -45,6 +45,72 @@ class MyDuaService {
     return response;
   }
 
+  // Ziyarat
+  Future<GenericAudioList> getZiyarat({int? userId}) async {
+    final response = await apiService.fetchData<GenericAudioList>(
+        endpoint: '/ziyaratlist',
+        query: userId != null ? {'userid': userId.toString()} : {},
+        fromJson: (json) => GenericAudioList.fromJson(json)
+    );
+    return response;
+  }
+
+  // Dua
+  Future<GenericAudioList> getDua({int? userId}) async {
+    final response = await apiService.fetchData<GenericAudioList>(
+        endpoint: '/dualist',
+        query: userId != null ? {'userid': userId.toString()} : {},
+        fromJson: (json) => GenericAudioList.fromJson(json)
+    );
+    return response;
+  }
+
+  // Surah
+  Future<GenericAudioList> getSurah({int? userId}) async {
+    final response = await apiService.fetchData<GenericAudioList>(
+        endpoint: '/surahlist',
+        query: userId != null ? {'userid': userId.toString()} : {},
+        fromJson: (json) => GenericAudioList.fromJson(json)
+    );
+    return response;
+  }
+
+  Future<List<GenericAudioItem>> getFavSurah(int userId) async {
+    final response = await apiService.fetchListData<GenericAudioItem>(
+      endpoint: '/favouritesurah',
+      query: {'userid': userId.toString()},
+      fromJson: (json) => GenericAudioItem.fromJson(json),
+    );
+    return response;
+  }
+
+  Future<List<GenericAudioItem>> getFavSahifa(int userId) async {
+    final response = await apiService.fetchListData<GenericAudioItem>(
+      endpoint: '/favouriteshifa',
+      query: {'userid': userId.toString()},
+      fromJson: (json) => GenericAudioItem.fromJson(json),
+    );
+    return response;
+  }
+
+  Future<List<GenericAudioItem>> getFavDua(int userId) async {
+    final response = await apiService.fetchListData<GenericAudioItem>(
+      endpoint: '/favouritedua',
+      query: {'userid': userId.toString()},
+      fromJson: (json) => GenericAudioItem.fromJson(json),
+    );
+    return response;
+  }
+
+  Future<List<GenericAudioItem>> getFavZiyarat(int userId) async {
+    final response = await apiService.fetchListData<GenericAudioItem>(
+      endpoint: '/favouriteziyarat',
+      query: {'userid': userId.toString()},
+      fromJson: (json) => GenericAudioItem.fromJson(json),
+    );
+    return response;
+  }
+
   Future<FavouriteApi> updateFavSahifa(int userId, int audioId) async {
     final response = await apiService.fetchData<FavouriteApi>(
         endpoint: '/sahifafavaudio',
@@ -54,25 +120,6 @@ class MyDuaService {
         },
         method: 'POST',
         fromJson: (json) => FavouriteApi.fromJson(json)
-    );
-    return response;
-  }
-
-  Future<List<GenericAudioItem>> getFavSahifa(int userId) async {
-    final response = await apiService.fetchData<List<GenericAudioItem>>(
-        endpoint: '/favouriteshifa',
-        query: {'userid': userId.toString()},
-        fromJson: (json) => (json as List).map((e) => GenericAudioItem.fromJson(e)).toList(),
-    );
-    return response;
-  }
-
-  // Ziyarat
-  Future<GenericAudioList> getZiyarat({int? userId}) async {
-    final response = await apiService.fetchData<GenericAudioList>(
-        endpoint: '/ziyaratlist',
-        query: userId != null ? {'userid': userId.toString()} : {},
-        fromJson: (json) => GenericAudioList.fromJson(json)
     );
     return response;
   }
@@ -90,25 +137,6 @@ class MyDuaService {
     return response;
   }
 
-  Future<List<GenericAudioItem>> getFavZiyarat(int userId) async {
-    final response = await apiService.fetchData<List<GenericAudioItem>>(
-      endpoint: '/favouriteziyarat',
-      query: {'userid': userId.toString()},
-      fromJson: (json) => (json as List).map((e) => GenericAudioItem.fromJson(e)).toList(),
-    );
-    return response;
-  }
-
-  // Dua
-  Future<GenericAudioList> getDua({int? userId}) async {
-    final response = await apiService.fetchData<GenericAudioList>(
-        endpoint: '/dualist',
-        query: userId != null ? {'userid': userId.toString()} : {},
-        fromJson: (json) => GenericAudioList.fromJson(json)
-    );
-    return response;
-  }
-
   Future<FavouriteApi> updateFavDua(int userId, int audioId) async {
     final response = await apiService.fetchData<FavouriteApi>(
         endpoint: '/duafavaudio',
@@ -118,25 +146,6 @@ class MyDuaService {
         },
         method: 'POST',
         fromJson: (json) => FavouriteApi.fromJson(json)
-    );
-    return response;
-  }
-
-  Future<List<GenericAudioItem>> getFavDua(int userId) async {
-    final response = await apiService.fetchData<List<GenericAudioItem>>(
-      endpoint: '/favouritedua',
-      query: {'userid': userId.toString()},
-      fromJson: (json) => (json as List).map((e) => GenericAudioItem.fromJson(e)).toList(),
-    );
-    return response;
-  }
-
-  // Surah
-  Future<GenericAudioList> getSurah({int? userId}) async {
-    final response = await apiService.fetchData<GenericAudioList>(
-        endpoint: '/surahlist',
-        query: userId != null ? {'userid': userId.toString()} : {},
-        fromJson: (json) => GenericAudioList.fromJson(json)
     );
     return response;
   }
@@ -154,16 +163,6 @@ class MyDuaService {
     return response;
   }
 
-  Future<List<GenericAudioItem>> getFavSurah(int userId) async {
-    final response = await apiService.fetchData<List<GenericAudioItem>>(
-      endpoint: '/favouritesurah',
-      query: {'userid': userId.toString()},
-      fromJson: (json) => (json as List).map((e) => GenericAudioItem.fromJson(e)).toList(),
-    );
-    return response;
-  }
-
-  // Favourite All
   Future<FavouriteApi> updateFavAll(int userId, int audioId) async {
     final response = await apiService.fetchData<FavouriteApi>(
         endpoint: '/allfavourite',
@@ -178,10 +177,10 @@ class MyDuaService {
   }
 
   Future<List<GenericAudioItem>> getFavAll(int userId) async {
-    final response = await apiService.fetchData<List<GenericAudioItem>>(
+    final response = await apiService.fetchListData<GenericAudioItem>(
       endpoint: '/allfavourite',
       query: {'userid': userId.toString()},
-      fromJson: (json) => (json as List<Map<String, dynamic>>).map((e) => GenericAudioItem.fromJson(e)).toList(),
+      fromJson: (json) => GenericAudioItem.fromJson(json),
     );
     return response;
   }

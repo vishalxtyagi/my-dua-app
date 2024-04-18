@@ -51,94 +51,56 @@ class _FavouritePageState extends State<FavouritePage> {
 
   late AppProvider appProvider;
   late AuthProvider authProvider;
-  late AudioProvider audioProvider;
 
   List<GenericAudioItem>? audioList;
   String favouriteType = 'dua';
 
   void fetchFavDua() {
-    if (audioProvider.favouriteDua == null) {
-      myDua.getFavSahifa(authProvider.userId!).then((value) {
-        audioProvider.setFavouriteDua(value);
-
-        setState(() {
-          audioList = value;
-        });
-      });
-    } else {
+    myDua.getFavDua(authProvider.userId!).then((value) {
       setState(() {
-        audioList = audioProvider.favouriteDua;
+        audioList = value;
       });
-    }
+    });
   }
 
   void fetchFavSahifa() {
-    if (audioProvider.favouriteSahifa == null) {
-      myDua.getFavSahifa(authProvider.userId!).then((value) {
-        audioProvider.setFavouriteSahifa(value);
-
-        setState(() {
-          audioList = value;
-        });
-      });
-    } else {
+    myDua.getFavSahifa(authProvider.userId!).then((value) {
       setState(() {
-        audioList = audioProvider.favouriteSahifa;
+        audioList = value;
       });
-    }
+    });
   }
 
   void fetchFavZiyarat() {
-    if (audioProvider.favouriteZiyarat == null) {
-      myDua.getFavZiyarat(authProvider.userId!).then((value) {
-        audioProvider.setFavouriteZiyarat(value);
-
-        setState(() {
-          audioList = value;
-        });
-      });
-    } else {
+    myDua.getFavZiyarat(authProvider.userId!).then((value) {
       setState(() {
-        audioList = audioProvider.favouriteZiyarat;
+        audioList = value;
       });
-    }
+    });
   }
 
   void fetchFavSurah() {
-    if (audioProvider.favouriteSurah == null) {
-      myDua.getFavSurah(authProvider.userId!).then((value) {
-        audioProvider.setFavouriteSurah(value);
-
-        setState(() {
-          audioList = value;
-        });
-      });
-    } else {
+    myDua.getFavSurah(authProvider.userId!).then((value) {
       setState(() {
-        audioList = audioProvider.favouriteSurah;
+        audioList = value;
       });
-    }
+    });
   }
 
   void fetchFavAll() {
-    if (audioProvider.favouriteAll == null) {
-      myDua.getFavAll(authProvider.userId!).then((value) {
-        audioProvider.setFavouriteAll(value);
-
-        setState(() {
-          audioList = value;
-        });
-      });
-    } else {
+    myDua.getFavAll(authProvider.userId!).then((value) {
       setState(() {
-        audioList = audioProvider.favouriteAll;
+        audioList = value;
       });
-    }
+    });
   }
 
   void fetchAudio() async {
-    audioProvider = Provider.of<AudioProvider>(context, listen: false);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    setState(() {
+      audioList = null;
+    });
 
     switch (favouriteType) {
       case 'dua':
@@ -221,6 +183,7 @@ class _FavouritePageState extends State<FavouritePage> {
             Expanded(
               child: audioList == null
                   ? const Center(child: CircularProgressIndicator())
+                  : (audioList!.isEmpty ? Center(child: Text('No favourite $favouriteType found', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))
                   : ListView.builder(
                 padding: const EdgeInsets.all(10),
                 itemCount: audioList!.length,
@@ -240,19 +203,23 @@ class _FavouritePageState extends State<FavouritePage> {
                             ),
                           );
                         } else {
-                          myDua.updateFavDua(authProvider.userId!, audio.id).then((
+                          myDua.updateFavDua(authProvider.userId!, int.parse(audio.id)).then((
                               value) {
                             if (value.type == 'success') {
                               setState(() {
                                 audio.fav = value.fav;
                               });
+
+                              if (value.fav == 'No') {
+                                audioList!.removeAt(index);
+                              }
                             }
                           });
                         }
                       }
                   );
                 },
-              ),
+              )),
             ),
             AppPlayer.playerView(),
             Container(

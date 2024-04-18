@@ -85,7 +85,8 @@ class _ZiyaratPageState extends State<ZiyaratPage> {
         Expanded(
           child: audioList == null
               ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
+              : (audioList!.isEmpty ? const Center(child: Text('No Ziyarat found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))
+        : ListView.builder(
             padding: const EdgeInsets.all(10),
             itemCount: audioList!.length,
             itemBuilder: (context, index) {
@@ -116,7 +117,7 @@ class _ZiyaratPageState extends State<ZiyaratPage> {
                   }
               );
             },
-          ),
+          )),
         )
       ],
     );

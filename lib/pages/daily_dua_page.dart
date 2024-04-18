@@ -139,7 +139,8 @@ class _DailyDuaPageState extends State<DailyDuaPage> {
         Expanded(
           child: audioList == null
               ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
+              : (audioList!.isEmpty ? const Center(child: Text('No Daily Dua found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))
+        : ListView.builder(
                   padding: const EdgeInsets.all(10),
                   itemCount: audioList!.length,
                   itemBuilder: (context, index) {
@@ -150,7 +151,7 @@ class _DailyDuaPageState extends State<DailyDuaPage> {
                       audioUrl: audio.file,
                     );
                   },
-              ),
+              )),
         )
       ],
     );

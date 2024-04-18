@@ -6,13 +6,19 @@ class FavouriteApi {
   @JsonKey(name: 'fav')
   final String fav;
 
+  @JsonKey(name: 'icon')
+  final String icon;
+
   @JsonKey(name: 'type')
   final String type;
 
+
   FavouriteApi({
-    required this.fav,
     required this.type,
-  });
+    String? fav,
+    String? icon,
+  })  : fav = fav ?? icon ?? '',
+        icon = icon ?? '';
 
   factory FavouriteApi.fromJson(Map<String, dynamic> json) =>
       _$FavouriteApiFromJson(json);
