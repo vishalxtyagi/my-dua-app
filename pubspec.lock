@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0+1"
+  alarm:
+    dependency: "direct main"
+    description:
+      name: alarm
+      sha256: b41a5ea526e2333bcf281bf29f764261c43be73df77d031d4fb8d883101865ca
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
   analyzer:
     dependency: transitive
     description:
@@ -406,6 +414,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_fgbg:
+    dependency: transitive
+    description:
+      name: flutter_fgbg
+      sha256: "08c4d2fd229e3df26083d5aecc3dea9ff4f2d188f8cd57aaf2b3f047bd08a047"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -447,7 +463,7 @@ packages:
     source: hosted
     version: "7.0.0+1"
   flutter_native_splash:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: flutter_native_splash
       sha256: "558f10070f03ee71f850a78f7136ab239a67636a294a44a06b6b7345178edb1e"
@@ -625,7 +641,7 @@ packages:
     source: hosted
     version: "6.7.1"
   just_audio:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: just_audio
       sha256: b7cb6bbf3750caa924d03f432ba401ec300fd90936b3f73a9b33d58b1e96286b
@@ -784,6 +800,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  permission_handler:
+    dependency: "direct main"
+    description:
+      name: permission_handler
+      sha256: "18bf33f7fefbd812f37e72091a15575e72d5318854877e0e4035a24ac1113ecb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.3.1"
+  permission_handler_android:
+    dependency: transitive
+    description:
+      name: permission_handler_android
+      sha256: "1acac6bae58144b442f11e66621c062aead9c99841093c38f5bcdcc24c1c3474"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.0.5"
+  permission_handler_apple:
+    dependency: transitive
+    description:
+      name: permission_handler_apple
+      sha256: e9ad66020b89ff1b63908f247c2c6f931c6e62699b756ef8b3c4569350cd8662
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.4.4"
+  permission_handler_html:
+    dependency: transitive
+    description:
+      name: permission_handler_html
+      sha256: "54bf176b90f6eddd4ece307e2c06cf977fb3973719c35a93b85cc7093eb6070d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
+  permission_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: permission_handler_platform_interface
+      sha256: "48d4fcf201a1dad93ee869ab0d4101d084f49136ec82a8a06ed9cfeacab9fd20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.1"
+  permission_handler_windows:
+    dependency: transitive
+    description:
+      name: permission_handler_windows
+      sha256: "1a790728016f79a41216d88672dbc5df30e686e811ad4e698bfc51f76ad91f1e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   petitparser:
     dependency: transitive
     description:
@@ -1014,7 +1078,7 @@ packages:
     source: hosted
     version: "0.6.1"
   timezone:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: timezone
       sha256: "1cfd8ddc2d1cfd836bc93e67b9be88c3adaeca6f40a00ca999104c30693cdca0"
@@ -1205,14 +1269,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.4"
-  workmanager:
-    dependency: "direct main"
-    description:
-      name: workmanager
-      sha256: ed13530cccd28c5c9959ad42d657cd0666274ca74c56dea0ca183ddd527d3a00
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.2"
   xdg_directories:
     dependency: transitive
     description:
