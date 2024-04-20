@@ -3,6 +3,7 @@ import 'package:dua/pages/home_page.dart';
 import 'package:dua/providers/app_provider.dart';
 import 'package:dua/providers/audio_provider.dart';
 import 'package:dua/providers/auth_provider.dart';
+import 'package:dua/utils/adhan_alarm.dart';
 import 'package:dua/utils/colors.dart';
 import 'package:dua/utils/strings.dart';
 import 'package:dua/utils/themes.dart';
@@ -21,6 +22,7 @@ void main() async {
   Wakelock.enable();
 
   await Alarm.init(showDebugLogs: true);
+  Alarm.ringStream.stream.listen((_) => setAdhanForNextDay());
 
   AuthProvider authProvider = AuthProvider();
   await authProvider.checkAuthenticationStatus();

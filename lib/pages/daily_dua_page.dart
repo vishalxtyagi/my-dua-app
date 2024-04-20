@@ -6,6 +6,7 @@ import 'package:dua/providers/app_provider.dart';
 import 'package:dua/providers/audio_provider.dart';
 import 'package:dua/services/api_service.dart';
 import 'package:dua/services/my_dua_service.dart';
+import 'package:dua/utils/adhan_alarm.dart';
 import 'package:dua/utils/colors.dart';
 import 'package:dua/utils/helper.dart';
 import 'package:dua/widgets/audio_card.dart';
@@ -82,6 +83,7 @@ class _DailyDuaPageState extends State<DailyDuaPage> {
       final params = CalculationMethod.dubai.getParameters();
       final prayerTimes = PrayerTimes.today(appProvider.coordinates, params);
       appProvider.setPrayerTimes(prayerTimes);
+      setAdhanAlarm(prayerTimes);
       setState(() {
         isPrayerLoading = false;
       });

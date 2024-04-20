@@ -105,7 +105,7 @@ class _ZiyaratPageState extends State<ZiyaratPage> {
                         ),
                       );
                     } else {
-                      myDua.updateFavDua(authProvider.userId!, audio.id).then((
+                      myDua.updateFavZiyarat(authProvider.userId!, audio.id).then((
                           value) {
                         if (value.type == 'success') {
                           setState(() {

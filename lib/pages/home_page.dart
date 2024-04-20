@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:auto_start_flutter/auto_start_flutter.dart';
 import 'package:dua/providers/app_provider.dart';
 import 'package:dua/services/my_dua_service.dart';
 import 'package:dua/services/api_service.dart';
+import 'package:dua/utils/adhan_alarm.dart';
 import 'package:dua/utils/colors.dart';
 import 'package:dua/utils/helper.dart';
 import 'package:dua/utils/player.dart';
@@ -113,6 +115,10 @@ class _HomePageState extends State<HomePage> {
     // Fetch marqueeText when the widget is initialized
     fetchHeadlines();
     fetchEvent();
+
+    getAutoStartPermission();
+    checkAndroidScheduleExactAlarmPermission();
+    checkNotificationPermission();
 
     determinePosition((lat, long) async {
       log('Latitude: $lat, Longitude: $long');

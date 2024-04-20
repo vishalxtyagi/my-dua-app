@@ -36,6 +36,7 @@ dependencies:
   country_code_picker: ^3.0.0
   alarm: ^3.1.1
   permission_handler: ^11.3.1
+  auto_start_flutter: ^0.1.1
 
 dev_dependencies:
   flutter_test:
