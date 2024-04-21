@@ -37,6 +37,7 @@ dependencies:
   alarm: ^3.1.1
   permission_handler: ^11.3.1
   auto_start_flutter: ^0.1.1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

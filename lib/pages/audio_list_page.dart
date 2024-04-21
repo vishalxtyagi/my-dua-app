@@ -10,6 +10,7 @@ import 'package:dua/services/api_service.dart';
 import 'package:dua/services/my_dua_service.dart';
 import 'package:dua/utils/colors.dart';
 import 'package:dua/utils/player.dart';
+import 'package:dua/utils/strings.dart';
 import 'package:dua/widgets/audio_card.dart';
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -29,8 +30,6 @@ class AudioListPage extends StatefulWidget {
 class _AudioListPageState extends State<AudioListPage> {
   final myDua = MyDuaService(ApiService());
   final today = HijriCalendar.now();
-
-  final List<String> _languages = ['عربي', 'हिंदी', 'English', 'ગુજરાતી'];
 
   late AppProvider appProvider;
   late AuthProvider authProvider;
@@ -219,7 +218,7 @@ class _AudioListPageState extends State<AudioListPage> {
             ),
             CustomDropdown<String>(
               hintText: 'Select Language',
-              items: _languages,
+              items: AppStrings.languages,
               initialItem: appProvider.appLanguage,
               decoration: CustomDropdownDecoration(
                 closedFillColor: AppColors.marqueeBgColor,

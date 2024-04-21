@@ -1,16 +1,8 @@
 class AppStrings {
     static const String appName = "My Dua";
-    static const String blankFragmentMsg = "Hello blank fragment";
-    static const String myFavourites = "My Favorites";
-    static const String ourRadio = "Our Radio";
-    static const String settings = "Settings";
-    static const String changeLanguage = "Change Language";
-    static const String login = "Login";
-    static const String myProfileTitle = "My Profile";
-    static const String firstFragmentLabel = "First Fragment";
-    static const String secondFragmentLabel = "Second Fragment";
-    static const String next = "Next";
-    static const String previous = "Previous";
+    static const String appVersion = "1.0.0";
+    static const String githubApiUrl = "https://api.github.com/repos/vishalxtyagi/my-dua-app";
+    static const String githubToken = "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";
 
     static const String loremIpsum = """
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -55,27 +47,4 @@ class AppStrings {
         'हिंदी',
         'ગુજરાતી',
     ];
-
-    static const List<String> audioSpeed = [
-        '0.5x',
-        '0.75x',
-        'Normal',
-        '1.25x',
-        '1.5x',
-        '1.75x',
-        '2x',
-        '4x',
-    ];
-
-    static const List<String> date = [
-        '0',
-        '-2',
-        '-1',
-        '1',
-        '2',
-    ];
-
-    static const String defaultNotificationChannelId = "channel_101";
-    static const String defaultNotificationChannelName = "Hi";
-    static const String defaultNotificationChannelDescription = "Good Morning";
 }

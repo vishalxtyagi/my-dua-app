@@ -8,6 +8,7 @@ import 'package:dua/services/api_service.dart';
 import 'package:dua/services/my_dua_service.dart';
 import 'package:dua/utils/adhan_alarm.dart';
 import 'package:dua/utils/colors.dart';
+import 'package:dua/utils/coordinates.dart';
 import 'package:dua/utils/helper.dart';
 import 'package:dua/widgets/audio_card.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class _DailyDuaPageState extends State<DailyDuaPage> {
   };
 
   bool isPrayerLoading = true;
+  MyCoordinates _prevCoordinates = MyCoordinates(0.0, 0.0);
 
   GenericAudioList? allAudioList;
   List<GenericAudioItem>? audioList;
@@ -78,14 +80,15 @@ class _DailyDuaPageState extends State<DailyDuaPage> {
   }
 
   void fetchPrayerTimesIfNeeded() {
-    log('isPrayerLoading: $isPrayerLoading');
-    if (isPrayerLoading) {
-      final params = CalculationMethod.dubai.getParameters();
+    if (appProvider.coordinates != _prevCoordinates) {
+      log('Fetching prayer times for coordinates: ${appProvider.coordinates.latitude}, ${appProvider.coordinates.longitude}');
+      final params = CalculationMethod.karachi.getParameters();
       final prayerTimes = PrayerTimes.today(appProvider.coordinates, params);
       appProvider.setPrayerTimes(prayerTimes);
       setAdhanAlarm(prayerTimes);
       setState(() {
         isPrayerLoading = false;
+        _prevCoordinates = appProvider.coordinates;
       });
     }
   }

@@ -1,7 +1,9 @@
 import 'package:dua/models/auth/auth_response.dart';
 import 'package:dua/models/auth/profile_response.dart';
+import 'package:dua/models/config/config_variables.dart';
 import 'package:dua/models/user/user_data.dart';
 import 'package:dua/services/api_service.dart';
+import 'package:dua/utils/strings.dart';
 
 class AuthService {
   final ApiService apiService;
@@ -92,6 +94,20 @@ class AuthService {
           'phone': phone
         },
         fromJson: (json) => ProfileResponse.fromJson(json)
+    );
+    return response;
+  }
+
+  Future<ConfigVariables> getConfigVariables() async {
+    final response = await apiService.fetchData<ConfigVariables>(
+        baseUrl: AppStrings.githubApiUrl,
+        endpoint: '/actions/variables',
+        headers: {
+          'Authorization': 'Bearer ${AppStrings.githubToken}',
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        },
+        fromJson: (json) => ConfigVariables.fromJson(json)
     );
     return response;
   }

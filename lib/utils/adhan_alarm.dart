@@ -3,8 +3,11 @@ import 'dart:developer';
 import 'package:adhan/adhan.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
+import 'package:auto_start_flutter/auto_start_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'coordinates.dart';
 
 Future<void> setAdhanAlarm(PrayerTimes prayerTimes) async {
   log('Setting adhan alarms for today...');
@@ -47,12 +50,12 @@ Future<void> setAdhanAlarm(PrayerTimes prayerTimes) async {
 
 Future<void> setAdhanForNextDay() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  Coordinates coordinates = Coordinates(
+  MyCoordinates coordinates = MyCoordinates(
       prefs.getDouble('latitude') ?? 0.0,
       prefs.getDouble('longitude') ?? 0.0
   );
 
-  final params = CalculationMethod.dubai.getParameters();
+  final params = CalculationMethod.karachi.getParameters();
   DateComponents tomorrow = DateComponents.from(DateTime.now().add(const Duration(days: 1)));
   log('Tomorrow: ${tomorrow.day}-${tomorrow.month}-${tomorrow.year}');
   log('Setting adhan alarms for next day...');
@@ -82,5 +85,14 @@ Future<void> checkNotificationPermission() async {
     print('Requesting notification permission...');
     final res = await Permission.notification.request();
     print('Notification permission ${res.isGranted ? '' : 'not'} granted.');
+  }
+}
+
+Future<void> initAutoStart() async {
+  try {
+    bool isAvailable = await isAutoStartAvailable ?? false;
+    if (isAvailable) await getAutoStartPermission();
+  } catch (e) {
+    log('Error initializing auto start: $e');
   }
 }

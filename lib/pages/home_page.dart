@@ -3,14 +3,16 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import 'package:auto_start_flutter/auto_start_flutter.dart';
+import 'package:dua/pages/web_view_page.dart';
 import 'package:dua/providers/app_provider.dart';
 import 'package:dua/services/my_dua_service.dart';
 import 'package:dua/services/api_service.dart';
 import 'package:dua/utils/adhan_alarm.dart';
+import 'package:dua/utils/auth.dart';
 import 'package:dua/utils/colors.dart';
 import 'package:dua/utils/helper.dart';
 import 'package:dua/utils/player.dart';
+import 'package:dua/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:marquee/marquee.dart';
@@ -30,11 +32,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  bool showErrorMsg = false;
+  String? callToAction;
+  String? errorMsg;
+
   final myDua = MyDuaService(ApiService());
   final today = HijriCalendar.now();
   late AppProvider appProvider;
-
-  final List<String> _languages = ['عربي', 'हिंदी', 'English', 'ગુજરાતી'];
 
   final List<Widget> _pages = [
     DailyDuaPage(),
@@ -77,7 +81,8 @@ class _HomePageState extends State<HomePage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text('No Internet Connection'),
-                content: const Text('Please check your internet connection and try again'),
+                content: const Text(
+                    'Please check your internet connection and try again'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -97,7 +102,8 @@ class _HomePageState extends State<HomePage> {
             builder: (context) {
               return AlertDialog(
                 title: const Text('VPN Detected'),
-                content: const Text('It seems you are using a VPN. Please disable it because it may cause some issues'),
+                content: const Text(
+                    'It seems you are using a VPN. Please disable it because it may cause some issues'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -116,7 +122,6 @@ class _HomePageState extends State<HomePage> {
     fetchHeadlines();
     fetchEvent();
 
-    getAutoStartPermission();
     checkAndroidScheduleExactAlarmPermission();
     checkNotificationPermission();
 
@@ -135,7 +140,8 @@ class _HomePageState extends State<HomePage> {
           builder: (context) {
             return AlertDialog(
               title: const Text('Location Error'),
-              content: const Text('Please enable location services and try again'),
+              content: const Text(
+                  'Please enable location services and try again'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -148,20 +154,83 @@ class _HomePageState extends State<HomePage> {
           }
       );
     });
+
+    // initAutoStart();
+
+    getConfig(
+      onSuccess: (variables) {
+        log('Config variables: $variables');
+        for(final variable in variables) {
+          switch (variable['name']) {
+            case 'IS_APP_ENABLED':
+              if (variable['value'] != 'true') {
+                exit(0);
+              }
+              break;
+            case 'SHOW_CUSTOM_MESSAGE':
+              if (variable['value'] != 'none') {
+                setState(() {
+                  errorMsg = variable['value'];
+                });
+              }
+              break;
+            case 'CALL_TO_ACTION':
+              if (variable['value'] != 'none') {
+                setState(() {
+                  callToAction = variable['value'];
+                });
+              }
+              break;
+          }
+        }
+      },
+      onError: (error) {
+        log('Error fetching config variables: $error');
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Error'),
+                content: const Text(
+                    'We are unable to fetch the data. Please try again later'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      exit(0);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            }
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     appProvider = Provider.of<AppProvider>(context);
-    // HijriCalendar.setLocal('ar');
 
     return SafeArea(
-      child: Scaffold(
+      child: errorMsg == null ? Scaffold(
         appBar: AppBar(
           title: Image.asset(
-            'assets/images/logoi.png',
-            width: 225
+              'assets/images/logoi.png',
+              width: 225
           ),
+          actions: [
+            if (callToAction != null && errorMsg == null)
+              IconButton(
+                icon: const Icon(Icons.gpp_good, color: AppColors.whiteColor),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WebViewPage(url: callToAction!))
+                  );
+                },
+              ),
+          ],
           backgroundColor: AppColors.primaryColor,
           centerTitle: true,
         ),
@@ -187,7 +256,7 @@ class _HomePageState extends State<HomePage> {
               style: const TextStyle(
                   color: AppColors.primaryColor,
                   fontWeight: FontWeight.bold,
-                fontSize: 18
+                  fontSize: 18
               ),
               textAlign: TextAlign.center,
             ),
@@ -205,19 +274,19 @@ class _HomePageState extends State<HomePage> {
               child: _pages[_selectedIndex],
             ),
             if (_selectedIndex != 4)
-            CustomDropdown<String>(
-              hintText: 'Select Language',
-              items: _languages,
-              initialItem: appProvider.appLanguage,
-              decoration: CustomDropdownDecoration(
-                closedFillColor: AppColors.marqueeBgColor,
-                closedBorderRadius: BorderRadius.circular(0),
+              CustomDropdown<String>(
+                hintText: 'Select Language',
+                items: AppStrings.languages,
+                initialItem: appProvider.appLanguage,
+                decoration: CustomDropdownDecoration(
+                  closedFillColor: AppColors.marqueeBgColor,
+                  closedBorderRadius: BorderRadius.circular(0),
+                ),
+                onChanged: (value) {
+                  log('changing language to: $value');
+                  appProvider.setLanguage(value);
+                },
               ),
-              onChanged: (value) {
-                log('changing language to: $value');
-                appProvider.setLanguage(value);
-              },
-            ),
             if (_selectedIndex != 4)
               AppPlayer.playerView(),
           ],
@@ -250,7 +319,59 @@ class _HomePageState extends State<HomePage> {
           surfaceTintColor: AppColors.whiteColor,
           onDestinationSelected: _onItemTapped,
         ),
-      ),
+      ) : Scaffold(
+        appBar: AppBar(
+          title: Image.asset(
+              'assets/images/logoi.png',
+              width: 225
+          ),
+          backgroundColor: AppColors.primaryColor,
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/warning.png', width: 200),
+                    const SizedBox(height: 40),
+                    Text(
+                      formatHeading(errorMsg!),
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryColor
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              if (callToAction != null)
+                FilledButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => WebViewPage(url: callToAction!)),
+                            (route) => false
+                    );
+                  },
+                  child: const Text(
+                    'Click here to continue',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      )
     );
   }
 }

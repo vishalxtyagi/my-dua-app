@@ -3,12 +3,16 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "https://mydua.online/wp-json/customapi/v1";
-  final String authToken = "MTAtMjAtMjAyMyAwOToyNDoyNkZ6VXI1MURKRGJZZ3dodVk=";
+  static const String apiUrl = "https://mydua.online/wp-json/customapi/v1";
+  static const String authToken = "MTAtMjAtMjAyMyAwOToyNDoyNkZ6VXI1MURKRGJZZ3dodVk=";
 
   Future<T> fetchData<T>({
     required String endpoint,
+    String baseUrl = apiUrl,
     String method = 'GET',
+    Map<String, String> headers = const {
+      'Authorization': 'Bearer $authToken',
+    },
     Map<String, String> data = const {},
     Map<String, String>? query,
     bool showApiError = false,
@@ -17,7 +21,7 @@ class ApiService {
     try {
       final uri = Uri.parse('$baseUrl$endpoint').replace(queryParameters: query);
       final request = http.Request(method, uri);
-      request.headers['Authorization'] = 'Bearer $authToken';
+      request.headers.addAll(headers);
       request.bodyFields = data;
       log('Request: $request');
 
@@ -46,7 +50,11 @@ class ApiService {
 
   Future<List<T>> fetchListData<T>({
     required String endpoint,
+    String baseUrl = apiUrl,
     String method = 'GET',
+    Map<String, String> headers = const {
+      'Authorization': 'Bearer $authToken',
+    },
     Map<String, String> data = const {},
     Map<String, String>? query,
     bool showApiError = false,
@@ -55,7 +63,7 @@ class ApiService {
     try {
       final uri = Uri.parse('$baseUrl$endpoint').replace(queryParameters: query);
       final request = http.Request(method, uri);
-      request.headers['Authorization'] = 'Bearer $authToken';
+      request.headers.addAll(headers);
       request.bodyFields = data;
       log('Request: $request');
 

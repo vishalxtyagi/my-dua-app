@@ -6,6 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 // Check internet connectivity
 void checkInternetConnectivity(void Function(bool isConnected) onCompletion, {void Function(bool isVPN)? onProxy}) async {
@@ -21,25 +22,26 @@ void checkInternetConnectivity(void Function(bool isConnected) onCompletion, {vo
 
 // Get current Location coordinates
 Future<void> determinePosition(void Function(double lat, double long) onCompletion, void Function(String error) onError) async {
-  bool serviceEnabled;
-  LocationPermission permission;
+  log('Determining position...');
 
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     onError('Location services are disabled.');
     AppSettings.openAppSettings(type: AppSettingsType.location);
     return;
   }
 
-  permission = await Geolocator.checkPermission();
-  log('Permission: $permission');
+  final status = await Permission.location.status;
+  print('Location permission: $status.');
+  if (status.isDenied) {
+    print('Requesting loction permission...');
+    final res = await Permission.location.request();
+    print('Location permission ${res.isGranted ? '' : 'not'} granted.');
+  }
 
-  if (permission == LocationPermission.denied) {
-    onError('Please enable location services to use the app.');
-    while (permission == LocationPermission.denied) {
-      AppSettings.openAppSettings(type: AppSettingsType.location);
-      permission = await Geolocator.requestPermission();
-    }
+  if (status.isPermanentlyDenied) {
+    onError('Location permission is denied.');
+    return;
   }
 
   final position = await Geolocator.getCurrentPosition();

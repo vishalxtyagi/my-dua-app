@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:dua/models/auth/profile_response.dart';
 import 'package:dua/models/user/user_data.dart';
 import 'package:dua/services/api_service.dart';
 import 'package:dua/services/auth_service.dart';
@@ -124,6 +123,18 @@ void getProfile(int userId, {void Function(UserData userData)? onSuccess, void F
     final response = await auth.getUserInfo(userId);
 
     onSuccess?.call(response);
+  } catch (e) {
+    onError?.call(e.toString());
+  }
+}
+
+void getConfig({void Function(List<dynamic> variables)? onSuccess, void Function(String message)? onError}) async {
+  final AuthService auth = AuthService(ApiService());
+
+  try {
+    final response = await auth.getConfigVariables();
+
+    onSuccess?.call(response.variables);
   } catch (e) {
     onError?.call(e.toString());
   }

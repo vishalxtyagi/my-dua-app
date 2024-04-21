@@ -1,6 +1,5 @@
-
-
 import 'package:adhan/adhan.dart';
+import 'package:dua/utils/coordinates.dart';
 import 'package:flutter/material.dart';
 import 'package:dua/utils/strings.dart';
 
@@ -18,12 +17,12 @@ class AppProvider with ChangeNotifier {
   }
 
   // coordinates
-  Coordinates _coordinates = Coordinates(0.0, 0.0);
+  MyCoordinates _coordinates = MyCoordinates(0.0, 0.0);
 
-  Coordinates get coordinates => _coordinates;
+  MyCoordinates get coordinates => _coordinates;
 
   void setCoordinates(double lat, double long) {
-    _coordinates = Coordinates(lat, long);
+    _coordinates = MyCoordinates(lat, long);
     notifyListeners();
   }
 
