@@ -3,13 +3,12 @@ import 'dart:developer';
 import 'package:adhan/adhan.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
-import 'package:auto_start_flutter/auto_start_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'coordinates.dart';
 
-Future<void> setAdhanAlarm(PrayerTimes prayerTimes) async {
+Future<void> setAdhanAlarm(PrayerTimes prayerTimes, {PrayerTimes? tomorrowPrayerTimes}) async {
   log('Setting adhan alarms for today...');
   List<DateTime> prayerTimesList = [
     prayerTimes.fajr,
@@ -22,12 +21,17 @@ Future<void> setAdhanAlarm(PrayerTimes prayerTimes) async {
   int i = 40;
 
   for (DateTime prayerTime in prayerTimesList) {
+    Prayer currentPrayer = prayerTimes.currentPrayerByDateTime(prayerTime);
+    String prayerName = currentPrayer.name;
 
     if (prayerTime.isBefore(DateTime.now())) {
-      continue;
+      final nextDayPrayerTime = prayerTime.add(const Duration(days: 1));
+      if (tomorrowPrayerTimes != null) {
+        prayerTime = tomorrowPrayerTimes.timeForPrayer(currentPrayer) ?? nextDayPrayerTime;
+      } else {
+        prayerTime = nextDayPrayerTime;
+      }
     }
-
-    String prayerName = prayerTimes.currentPrayerByDateTime(prayerTime).name;
 
     final alarmSettings = AlarmSettings(
       id: i++,
@@ -48,7 +52,7 @@ Future<void> setAdhanAlarm(PrayerTimes prayerTimes) async {
   }
 }
 
-Future<void> setAdhanForNextDay() async {
+Future<void> updateAdhanAlarm() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   MyCoordinates coordinates = MyCoordinates(
       prefs.getDouble('latitude') ?? 0.0,
@@ -58,14 +62,14 @@ Future<void> setAdhanForNextDay() async {
   final params = CalculationMethod.karachi.getParameters();
   DateComponents tomorrow = DateComponents.from(DateTime.now().add(const Duration(days: 1)));
   log('Tomorrow: ${tomorrow.day}-${tomorrow.month}-${tomorrow.year}');
-  log('Setting adhan alarms for next day...');
 
-  final prayerTimes = PrayerTimes(
+  final prayerTimes = PrayerTimes.today(coordinates, params);
+  final nextPrayerTimes = PrayerTimes(
       coordinates,
       tomorrow,
       params
   );
-  await setAdhanAlarm(prayerTimes);
+  await setAdhanAlarm(prayerTimes, tomorrowPrayerTimes: nextPrayerTimes);
 }
 
 Future<void> checkAndroidScheduleExactAlarmPermission() async {
@@ -85,14 +89,5 @@ Future<void> checkNotificationPermission() async {
     print('Requesting notification permission...');
     final res = await Permission.notification.request();
     print('Notification permission ${res.isGranted ? '' : 'not'} granted.');
-  }
-}
-
-Future<void> initAutoStart() async {
-  try {
-    bool isAvailable = await isAutoStartAvailable ?? false;
-    if (isAvailable) await getAutoStartPermission();
-  } catch (e) {
-    log('Error initializing auto start: $e');
   }
 }

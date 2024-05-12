@@ -22,7 +22,7 @@ void main() async {
   Wakelock.enable();
 
   await Alarm.init(showDebugLogs: true);
-  Alarm.ringStream.stream.listen((_) => setAdhanForNextDay());
+  Alarm.ringStream.stream.listen((_) => updateAdhanAlarm());
 
   AuthProvider authProvider = AuthProvider();
   await authProvider.checkAuthenticationStatus();

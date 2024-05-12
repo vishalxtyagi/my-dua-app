@@ -155,8 +155,6 @@ class _HomePageState extends State<HomePage> {
       );
     });
 
-    // initAutoStart();
-
     getConfig(
       onSuccess: (variables) {
         log('Config variables: $variables');
