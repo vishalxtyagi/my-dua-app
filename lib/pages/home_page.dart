@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
     List<DateTime> alarms = [for (AlarmSettings alarm in Alarm.getAlarms()) alarm.dateTime];
     List<DateTime> activeAlarms = alarms.where((alarmTime) => alarmTime.isAfter(now) && alarmTime.day == now.day).toList();
 
-    Timer.periodic(Duration(seconds: 5), (Timer timer) {
+    Timer.periodic(Duration(seconds: 30), (Timer timer) {
       log('Checking for alarms...');
       checkAndStartAlarm(activeAlarms);
     });
