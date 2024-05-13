@@ -18,7 +18,10 @@ Future<void> setAdhanAlarm(PrayerTimes prayerTimes, {PrayerTimes? tomorrowPrayer
     prayerTimes.maghrib,
   ];
 
-  int i = 40;
+  int i = 39;
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> keys = prefs.getKeys().where((key) => key.startsWith('alarm_')).toList();
 
   for (DateTime prayerTime in prayerTimesList) {
     Prayer currentPrayer = prayerTimes.currentPrayerByDateTime(prayerTime);
@@ -34,7 +37,7 @@ Future<void> setAdhanAlarm(PrayerTimes prayerTimes, {PrayerTimes? tomorrowPrayer
     }
 
     final alarmSettings = AlarmSettings(
-      id: i++,
+      id: ++i,
       dateTime: prayerTime,
       assetAudioPath: 'assets/azzan.mp3',
       loopAudio: false,
@@ -47,8 +50,17 @@ Future<void> setAdhanAlarm(PrayerTimes prayerTimes, {PrayerTimes? tomorrowPrayer
       androidFullScreenIntent: true,
     );
 
-    await Alarm.set(alarmSettings: alarmSettings);
-    log('Adhan alarm set for $prayerName at $prayerTime');
+    if (prefs.getBool('alarm_$i') ?? true) {
+      await Alarm.set(alarmSettings: alarmSettings);
+      await prefs.setBool('alarm_$i', true);
+      log('Adhan alarm set for $prayerName at $prayerTime');
+    }
+
+    keys.remove('alarm_$i');
+  }
+
+  for (String key in keys) {
+    await prefs.remove(key);
   }
 }
 

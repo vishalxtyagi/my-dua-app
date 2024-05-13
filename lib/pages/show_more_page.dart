@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dua/pages/alarm_page.dart';
 import 'package:dua/pages/audio_list_page.dart';
 import 'package:dua/pages/auth/change_password_page.dart';
 import 'package:dua/pages/auth/login_page.dart';
@@ -46,7 +47,7 @@ class _ShowMorePageState extends State<ShowMorePage> {
         MoreData("Aamaal and Namaz", image: "assets/images/namaz.png", page: const WebViewPage(url: "https://mydua.online/aamaal-and-namaz/")),
         MoreData("My Favourites", image: "assets/images/favourite.png", page: isAuthenticated ? FavouritePage() : LoginPage(redirectTo: FavouritePage())),
         MoreData("Quotes", image: "assets/images/quote_request.png", page: const WebViewPage(url: "https://mydua.online/quotes/")),
-        // MoreData("Hijri Date Adjustment", image: "assets/images/clock.png"),
+        MoreData("Azzan Alarm", image: "assets/images/clock.png", page: AlarmPage()),
         MoreData("Battery Optimization Settings", image: "assets/images/settings.png", page: OptimizationPage()),
         MoreData("Our Radio", image: "assets/images/radio.png", page: const WebViewPage(url: "https://azadar.media/")),
         MoreData("Waqf", image: "assets/images/arabic.png", page: const WebViewPage(url: "https://mydua.online/apppage-for-waqf/")),

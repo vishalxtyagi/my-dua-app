@@ -1,7 +1,10 @@
 
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:dua/pages/web_view_page.dart';
 import 'package:dua/providers/app_provider.dart';
@@ -204,6 +207,30 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+
+    DateTime now = DateTime.now();
+    List<DateTime> alarms = [for (AlarmSettings alarm in Alarm.getAlarms()) alarm.dateTime];
+    List<DateTime> activeAlarms = alarms.where((alarmTime) => alarmTime.isAfter(now) && alarmTime.day == now.day).toList();
+
+    Timer.periodic(Duration(seconds: 5), (Timer timer) {
+      log('Checking for alarms...');
+      checkAndStartAlarm(activeAlarms);
+    });
+  }
+
+  void checkAndStartAlarm(List<DateTime> alarms) {
+    DateTime now = DateTime.now();
+    for (int i = alarms.length - 1; i >= 0; i--) {
+      DateTime alarmTime = alarms[i].subtract(const Duration(minutes: 5));
+      log('Alarm time: $alarmTime, Now: $now, Is before: ${alarmTime.isBefore(now)}');
+
+      if (alarmTime.isBefore(now)) {
+        log('Alarm time is before now for $alarmTime');
+        AppPlayer.playRawAudio('assets/azzan.mp3');
+        alarms.removeAt(i);
+        log('After removal: $alarms');
+      }
+    }
   }
 
   @override
